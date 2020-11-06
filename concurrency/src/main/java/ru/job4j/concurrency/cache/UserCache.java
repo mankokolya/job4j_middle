@@ -1,7 +1,5 @@
-package ru.job4j.concurrency;
+package ru.job4j.concurrency.cache;
 
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;

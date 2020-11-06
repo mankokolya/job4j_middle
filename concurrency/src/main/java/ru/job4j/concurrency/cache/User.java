@@ -1,4 +1,4 @@
-package ru.job4j.concurrency;
+package ru.job4j.concurrency.cache;
 
 public class User {
     private int id;
