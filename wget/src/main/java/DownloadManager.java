@@ -1,53 +1,44 @@
 import java.io.BufferedInputStream;
 import java.io.FileOutputStream;
-import java.io.IOException;
 import java.net.URL;
-import java.util.concurrent.Callable;
+import java.util.concurrent.*;
 
-public class DownloadManager implements Callable<Integer> {
+public class DownloadManager {
 
-    private String fileUrl;
-    private int downloadLimit;
+    private final int downloadLimit;
+    private final String file;
 
-    DownloadManager(String fileUrl, int downloadLimit) {
-        this.fileUrl = fileUrl;
-        this.downloadLimit = downloadLimit;
+    public DownloadManager(String file, String downloadLimit) {
+        this.file = file;
+        this.downloadLimit = Integer.parseInt(downloadLimit);
     }
 
-    public void download () {
-        try (BufferedInputStream inputStream = new BufferedInputStream(new URL(fileUrl).openStream());
-                FileOutputStream fileOutputStream = new FileOutputStream("output.txt")) {
-            byte[] dataBuffer = new byte[downloadLimit];
-            int bytesRead;
-            startTime = System.currentTimeMillis();
-            while (bytesDownloaded <= downloadLimit
-                    && (bytesRead = inputStream.read(dataBuffer, 0, downloadLimit)) != -1) {
-                System.out.println(bytesRead + " bytesRead");
-                bytesDownloaded += bytesRead;
-                fileOutputStream.write(dataBuffer, 0, downloadLimit);
-                pauseDownload(downloadLimit);
+    public void download() {
+        try (BufferedInputStream inputStream = new BufferedInputStream(new URL(file).openStream());
+             FileOutputStream fileOutputStream = new FileOutputStream("output.txt")) {
+            long bytesRead = 0;
+            long pause;
+            ExecutorService executor = Executors.newSingleThreadExecutor();
+            while (bytesRead != -1) {
+                Future<Long[]> future = executor.submit(new DownloadLimit(downloadLimit, inputStream, fileOutputStream));
+                Long[] bytesReadAndPause = future.get();
+                bytesRead = bytesReadAndPause[0];
+                if (bytesRead > 0) {
+                    System.out.println(bytesRead + " bytesRead");
+                    pause = bytesReadAndPause[1];
+                    if (pause > 0) {
+                        System.out.println();
+                        System.out.println("pause is: " + pause);
+                        System.out.println();
+                        Thread.sleep(pause);
+                    }
+                }
             }
-        } catch (IOException | InterruptedException e) {
+            System.out.println("File is downloaded");
+            executor.shutdown();
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
-
-    private static void pauseDownload(int downloadLimit) throws InterruptedException {
-        if (bytesDownloaded >= downloadLimit) {
-            long usedTime = (System.currentTimeMillis() - startTime);
-            System.out.println(usedTime + " used Time in milliseconds");
-            long pauseTime = MILLISECONDS_IN_SECOND - usedTime;
-            if (pauseTime > 0) {
-                System.out.println(pauseTime + " pause");
-                Thread.sleep(pauseTime);
-            }
-            bytesDownloaded = 0;
-            startTime = System.currentTimeMillis();
-        }
-    }
-
-    @Override
-    public Integer call() throws Exception {
-        return null;
-    }
 }
+
