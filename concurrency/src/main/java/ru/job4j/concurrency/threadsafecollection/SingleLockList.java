@@ -8,7 +8,16 @@ import java.util.Iterator;
 
 @ThreadSafe
 public class SingleLockList<T> implements Iterable<T> {
-    @GuardedBy("this") private DynamicArray<T> container = new DynamicArray<T>(10);
+
+    @GuardedBy("this") private DynamicArray<T> container;
+
+    public SingleLockList() {
+        this.container = new DynamicArray<>();
+    }
+
+    public SingleLockList(int size) {
+        this.container = new DynamicArray<>(size);
+    }
 
     public synchronized void add(T value) {
         container.add(value);
