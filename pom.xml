@@ -11,6 +11,7 @@
     <modules>
         <module>concurrency</module>
         <module>wget</module>
+        <module>dynamiclist</module>
     </modules>
 
     <properties>
