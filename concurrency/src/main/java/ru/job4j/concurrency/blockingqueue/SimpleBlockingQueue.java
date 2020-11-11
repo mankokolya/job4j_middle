@@ -21,7 +21,7 @@ public class SimpleBlockingQueue<T> {
         while (this.queue.size() == this.limit) {
             try {
                 System.out.println("space is full, waiting");
-                wait();
+                this.wait();
             } catch (InterruptedException e) {
                 Thread.currentThread().interrupt();
             }
@@ -36,7 +36,7 @@ public class SimpleBlockingQueue<T> {
         while (this.queue.size() == 0) {
             try {
                 System.out.println("no elements present, waiting for elements");
-                wait();
+                this.wait();
             } catch (InterruptedException e) {
                 Thread.currentThread().interrupt();
             }

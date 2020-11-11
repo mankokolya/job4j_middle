@@ -2,8 +2,6 @@ package ru.job4j.concurrency.blockingqueue;
 
 import org.junit.Test;
 
-import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.PriorityBlockingQueue;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import static org.junit.Assert.assertEquals;
@@ -31,7 +29,7 @@ public class SimpleBlockingQueueTest {
     }
 
     @Test
-    public void test2() {
+    public void test2() throws InterruptedException {
         SimpleBlockingQueue<Integer> queue = new SimpleBlockingQueue<>(10);
         AtomicInteger result = new AtomicInteger();
         Thread producer = new Thread(
@@ -43,6 +41,7 @@ public class SimpleBlockingQueueTest {
         );
         consumer.start();
         producer.start();
+        producer.join();
 
         assertEquals(5, result.get());
 
