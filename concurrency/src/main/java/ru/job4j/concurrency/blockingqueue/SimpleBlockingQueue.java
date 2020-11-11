@@ -41,8 +41,10 @@ public class SimpleBlockingQueue<T> {
                 Thread.currentThread().interrupt();
             }
         }
-        T value = this.queue.poll();
-        this.notifyAll();
-        return value;
+        if (this.queue.size() == this.limit) {
+            this.notifyAll();
+        }
+        return this.queue.poll();
+
     }
 }
