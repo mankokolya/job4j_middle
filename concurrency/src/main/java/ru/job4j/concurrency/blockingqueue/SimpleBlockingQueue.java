@@ -36,19 +36,19 @@ public class SimpleBlockingQueue<T> {
         }
     }
 
-    public synchronized T poll() {
+    public synchronized T poll() throws InterruptedException {
         while (this.queue.size() == 0) {
-            try {
                 System.out.println("no elements present, waiting for elements");
                 this.wait();
-            } catch (InterruptedException e) {
-                Thread.currentThread().interrupt();
-            }
         }
         if (this.queue.size() == this.limit) {
             this.notifyAll();
         }
         return this.queue.poll();
 
+    }
+
+    public synchronized boolean isEmpty() {
+        return queue.isEmpty();
     }
 }

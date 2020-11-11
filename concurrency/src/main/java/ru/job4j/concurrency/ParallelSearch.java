@@ -14,7 +14,12 @@ public class ParallelSearch {
                 () -> {
                     boolean working = true;
                     while (working) {
-                        int result = queue.poll();
+                        int result = 0;
+                        try {
+                            result = queue.poll();
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
                         if (result != stopConsuming) {
                             System.out.println(result);
                         } else {
