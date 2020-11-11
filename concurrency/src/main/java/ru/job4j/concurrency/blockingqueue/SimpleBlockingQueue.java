@@ -11,11 +11,15 @@ public class SimpleBlockingQueue<T> {
 
     @GuardedBy("this")
     private final Queue<T> queue = new LinkedList<>();
-    private final int limit;
+    private int limit = 5;
+
+    public SimpleBlockingQueue() {
+    }
 
     public SimpleBlockingQueue(int limit) {
         this.limit = limit;
     }
+
 
     public synchronized void offer(T value) {
         while (this.queue.size() == this.limit) {
