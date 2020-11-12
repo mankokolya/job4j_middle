@@ -6,7 +6,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.stream.IntStream;
 
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertEquals;
@@ -22,7 +21,15 @@ public class SimpleBlockingQueueTest {
         final List<String> example = List.of("Nick", "Ira", "Bill", "John");
 
         Thread producer = new Thread(
-                () -> example.forEach(queue::offer)
+                () -> {
+                    for (String s : example) {
+                        try {
+                            queue.offer(s);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }
         );
 
         producer.start();
@@ -33,7 +40,7 @@ public class SimpleBlockingQueueTest {
                         try {
                             buffer.add(queue.poll());
                         } catch (InterruptedException e) {
-                            e.printStackTrace();
+//                            e.printStackTrace();
                             Thread.currentThread().interrupt();
                         }
                     }
@@ -52,9 +59,13 @@ public class SimpleBlockingQueueTest {
         final SimpleBlockingQueue<Integer> queue = new SimpleBlockingQueue<>();
         Thread producer = new Thread(
                 () -> {
-                    IntStream.range(0, 5).forEach(
-                            queue::offer
-                    );
+                    for (int i = 0; i < 5; i++) {
+                        try {
+                            queue.offer(i);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+                    }
                 }
         );
         producer.start();
@@ -64,7 +75,7 @@ public class SimpleBlockingQueueTest {
                         try {
                             buffer.add(queue.poll());
                         } catch (InterruptedException e) {
-                            e.printStackTrace();
+//                            e.printStackTrace();
                             Thread.currentThread().interrupt();
                         }
                     }
@@ -83,7 +94,13 @@ public class SimpleBlockingQueueTest {
         SimpleBlockingQueue<Integer> queue = new SimpleBlockingQueue<>(10);
         AtomicInteger result = new AtomicInteger();
         Thread producer = new Thread(
-                () -> queue.offer(5)
+                () -> {
+                    try {
+                        queue.offer(5);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
         );
 
         Thread consumer = new Thread(

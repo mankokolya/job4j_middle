@@ -21,14 +21,10 @@ public class SimpleBlockingQueue<T> {
     }
 
 
-    public synchronized void offer(T value) {
+    public synchronized void offer(T value) throws InterruptedException {
         while (this.queue.size() == this.limit) {
-            try {
                 System.out.println("space is full, waiting");
                 this.wait();
-            } catch (InterruptedException e) {
-                Thread.currentThread().interrupt();
-            }
         }
         this.queue.offer(value);
         if (this.queue.size() == 1) {

@@ -1,29 +1,23 @@
 package ru.job4j.concurrency;
 
 import net.jcip.annotations.ThreadSafe;
+import org.apache.log4j.spi.ThrowableRenderer;
 import ru.job4j.concurrency.blockingqueue.SimpleBlockingQueue;
 
 @ThreadSafe
 public class ParallelSearch {
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws InterruptedException {
         SimpleBlockingQueue<Integer> queue = new SimpleBlockingQueue<>();
-        final int stopConsuming = -1;
 
         final Thread consumer = new Thread(
                 () -> {
-                    boolean working = true;
-                    while (working) {
-                        int result = 0;
+                    while (!queue.isEmpty() || !Thread.currentThread().isInterrupted()) {
+
                         try {
-                            result = queue.poll();
+                            System.out.println(queue.poll());
                         } catch (InterruptedException e) {
-                            e.printStackTrace();
-                        }
-                        if (result != stopConsuming) {
-                            System.out.println(result);
-                        } else {
-                            working = false;
+                            Thread.currentThread().interrupt();
                         }
                     }
                 }
@@ -32,17 +26,20 @@ public class ParallelSearch {
 
         Thread producer = new Thread(
                 () -> {
-                    for (int index = 0; index != 3; index++) {
-                        queue.offer(index);
+                    for (int index = 0; index != 5; index++) {
                         try {
+                            queue.offer(index);
                             Thread.sleep(500);
                         } catch (InterruptedException e) {
                             e.printStackTrace();
                         }
                     }
-                    queue.offer(stopConsuming);
                 }
         );
+
         producer.start();
+        producer.join();
+        consumer.interrupt();
+        consumer.join();
     }
 }
