@@ -5,9 +5,12 @@ import net.jcip.annotations.ThreadSafe;
 import java.util.concurrent.atomic.AtomicReference;
 
 @ThreadSafe
-public class CASCount<T> {
-    private final AtomicReference<Integer> count = new AtomicReference<>();
+public class CASCount {
+    private final AtomicReference<Integer> count;
 
+    public CASCount(int value) {
+        this. count = new AtomicReference<>(value);
+    }
     public void increment() {
         int temp;
         do {
