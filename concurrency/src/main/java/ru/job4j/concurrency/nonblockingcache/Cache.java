@@ -1,5 +1,7 @@
 package ru.job4j.concurrency.nonblockingcache;
 
+import java.util.Collections;
+import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class Cache {
@@ -10,15 +12,25 @@ public class Cache {
     }
 
     public void add(Base model) {
-       cache.computeIfAbsent(model.getId(), )
+        cache.putIfAbsent(model.getId(), model);
     }
 
     public void update(Base model) {
+        int id = model.getId();
+        cache.computeIfPresent(id, (key, value) -> {
+            model.setVersion(cache.get(id).getVersion());
 
+            return model;
+        });
     }
 
     public void delete(Base model) {
-        cache.computeIfPresent(model.getId(), )
+        if (cache.contains(model)) {
+            cache.remove(model.getId());
+        }
+    }
 
+    public Map<Integer, Base> get() {
+        return Collections.unmodifiableMap(cache);
     }
 }
