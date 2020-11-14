@@ -16,9 +16,9 @@ public class CacheTest {
         Thread thread1 = new Thread(
                 () -> {
                     for (int i = 0; i < 10; i++) {
-                        cache.add(new Base(i, 1));
+                        cache.add(new Base(i));
                     }
-                    cache.update(new Base(5, 1));
+                    cache.update(new Base(5));
 
                 }
         );
@@ -28,11 +28,10 @@ public class CacheTest {
         Thread thread2 = new Thread(
                 () -> {
                     try {
-                        cache.update(new Base(5, 1));
+                        cache.update(new Base(5));
                     } catch (RuntimeException e) {
                         ex.set(e);
                     }
-
                 }
         );
         thread2.start();

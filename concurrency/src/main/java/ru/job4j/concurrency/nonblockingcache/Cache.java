@@ -18,8 +18,10 @@ public class Cache {
     public void update(Base model) {
         int id = model.getId();
         cache.computeIfPresent(id, (key, value) -> {
-            model.setVersion(cache.get(id).getVersion());
-
+            if (model.getVersion() != cache.get(id).getVersion()) {
+                throw new OptimisticException("You are trying to modify old version");
+            }
+            model.setVersion();
             return model;
         });
     }
