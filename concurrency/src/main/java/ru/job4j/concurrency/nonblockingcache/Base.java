@@ -4,19 +4,18 @@ import net.jcip.annotations.ThreadSafe;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
-@ThreadSafe
 public class Base {
 
     private final int id;
-    private final AtomicInteger version;
+    private int version;
 
     public Base(int id) {
         this.id = id;
-        this.version = new AtomicInteger(1);
+        this.version = 1;
     }
 
     public void setVersion() {
-       this.version.getAndIncrement();
+       this.version++;
     }
 
     public int getId() {
@@ -24,6 +23,6 @@ public class Base {
     }
 
     public int getVersion() {
-        return version.get();
+        return version;
     }
 }
