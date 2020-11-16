@@ -29,13 +29,13 @@ public class ParallelSearch<T> extends RecursiveTask<Integer> {
         ParallelSearch<T> rightSearch = new ParallelSearch<>(container, object, mid + 1, to);
         leftSearch.fork();
         rightSearch.fork();
-        int leftResult = leftSearch.join();
-        int rightResult = rightSearch.join();
+        Integer leftResult = leftSearch.join();
+        Integer rightResult = rightSearch.join();
         return leftResult > 0 ? leftResult : rightResult;
     }
 
     public int search(T[] container, T object) {
-        ForkJoinPool forkJoinPool = new ForkJoinPool();
+        ForkJoinPool forkJoinPool = ForkJoinPool.commonPool();
         return forkJoinPool.invoke(new ParallelSearch<>(container, object, 0, container.length - 1));
     }
 }

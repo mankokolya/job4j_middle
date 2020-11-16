@@ -15,8 +15,16 @@ public class LinearSearchTest {
     }
 
     @Test
-    public void parallelLinearSearch() {
-        Integer[] ints = {4, 5, 3, 7, 9, 1, 11, 45, 223, 23, 123, 2};
+    public void parallelLinearSearchWhenSizeLessThreshold() {
+        Integer[] ints = {4, 5, 3, 7, 9, 1, 11, 45, 223};
+        ParallelSearch<Integer> search = new ParallelSearch<>();
+        int index = search.search(ints, 5);
+        assertEquals(index, 1);
+    }
+
+    @Test
+    public void parallelLinearSearchWhenSizeBiggerThreshold() {
+        Integer[] ints = {4, 5, 3, 7, 9, 1, 11, 45, 223, 23, 45, 98, 50};
         ParallelSearch<Integer> search = new ParallelSearch<>();
         int index = search.search(ints, 5);
         assertEquals(index, 1);
