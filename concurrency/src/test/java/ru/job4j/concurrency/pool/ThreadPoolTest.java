@@ -2,8 +2,6 @@ package ru.job4j.concurrency.pool;
 
 import org.junit.Test;
 
-import static org.junit.Assert.*;
-
 public class ThreadPoolTest {
 
     @Test

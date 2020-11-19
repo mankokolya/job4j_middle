@@ -4,7 +4,7 @@ import ru.job4j.concurrency.blockingqueue.SimpleBlockingQueue;
 
 public class ThreadImplementation extends Thread {
     private final SimpleBlockingQueue<Runnable> queue;
-    private boolean isStopped = false;
+    private volatile boolean isStopped = false;
 
     public ThreadImplementation(SimpleBlockingQueue<Runnable> queue) {
         this.queue = queue;
@@ -22,12 +22,12 @@ public class ThreadImplementation extends Thread {
         }
     }
 
-    public synchronized void doStop() {
+    public void doStop() {
         this.isStopped = true;
         this.interrupt();
     }
 
-    public synchronized boolean isStopped() {
+    public boolean isStopped() {
         return this.isStopped;
     }
 }
