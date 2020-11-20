@@ -22,7 +22,7 @@ public class ThreadPool {
     }
 
     public void work(Runnable job) throws InterruptedException {
-        if (isStopped){
+        if (isStopped) {
             throw new IllegalStateException("Thread pool is stopped");
         }
         tasks.offer(job);
