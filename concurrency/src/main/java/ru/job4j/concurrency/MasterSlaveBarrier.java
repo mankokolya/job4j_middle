@@ -1,24 +1,9 @@
 package ru.job4j.concurrency;
 
-
 public class MasterSlaveBarrier {
     private boolean isPrinting = false;
 
     public void tryMaster() {
-        synchronized (this) {
-           while (isPrinting) {
-               try {
-                   this.wait();
-               } catch (InterruptedException e) {
-                   e.printStackTrace();
-               }
-           }
-
-           isPrinting = true;
-        }
-    }
-
-    public void trySlave() {
         synchronized (this) {
             while (isPrinting) {
                 try {
@@ -27,17 +12,27 @@ public class MasterSlaveBarrier {
                     e.printStackTrace();
                 }
             }
-            isPrinting = true;
+        }
+    }
+
+    public void trySlave() {
+        synchronized (this) {
+            while (!isPrinting) {
+                try {
+                    this.wait();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
         }
     }
 
     public void doneMaster() {
         synchronized (this) {
-            isPrinting = false;
+            isPrinting = true;
             this.notifyAll();
         }
     }
-
 
     public void doneSlave() {
         synchronized (this) {
@@ -45,5 +40,4 @@ public class MasterSlaveBarrier {
             this.notifyAll();
         }
     }
-
 }

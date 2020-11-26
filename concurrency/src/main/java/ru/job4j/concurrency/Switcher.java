@@ -1,7 +1,5 @@
 package ru.job4j.concurrency;
 
-import java.util.concurrent.atomic.AtomicBoolean;
-
 public class Switcher {
 
     public static void main(String[] args) throws InterruptedException {
@@ -12,12 +10,12 @@ public class Switcher {
                     while (true) {
                         barrier.tryMaster();
                         System.out.println("Thread A");
-                        barrier.doneMaster();
                         try {
                             Thread.sleep(2000);
                         } catch (InterruptedException e) {
                             e.printStackTrace();
                         }
+                        barrier.doneMaster();
                     }
                 }
         );
@@ -27,12 +25,12 @@ public class Switcher {
                     while (true) {
                         barrier.trySlave();
                         System.out.println("Thread B");
-                        barrier.doneSlave();
                         try {
                             Thread.sleep(2000);
                         } catch (InterruptedException e) {
                             e.printStackTrace();
                         }
+                        barrier.doneSlave();
                     }
                 }
         );
@@ -42,6 +40,4 @@ public class Switcher {
         first.join();
         second.join();
     }
-
-
 }
