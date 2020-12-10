@@ -17,11 +17,6 @@ public class JsonTest {
             + " \"author\":\"Nick\"\n"
             + "}";
 
-    private final String dayScenario1 = "{\n"
-            + " \"date\" : \"2019-12-25\", \n"
-            + " \"name\" : \"Christmas Day\"\n"
-            + "}";
-
 
     @Test
     public void testParse() throws IOException {
@@ -34,7 +29,7 @@ public class JsonTest {
         JsonNode node = Json.parse(jsonSource);
         SimpleTestCasePojo pojo = Json.fromJson(node, SimpleTestCasePojo.class);
 
-        assertEquals(pojo.getTitle(), "Coder From Scratch");
+        assertEquals("Coder From Scratch", pojo.getTitle());
     }
 
     @Test
@@ -58,6 +53,10 @@ public class JsonTest {
 
     @Test
     public void fromJsonDayTestScenario1() throws IOException {
+        String dayScenario1 = "{\n"
+                + " \"date\" : \"2019-12-25\", \n"
+                + " \"name\" : \"Christmas Day\"\n"
+                + "}";
         JsonNode node = Json.parse(dayScenario1);
         DayPojo pojo = Json.fromJson(node, DayPojo.class);
         assertEquals("2019-12-25", pojo.getDate().toString());
